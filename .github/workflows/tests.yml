@@ -65,6 +65,11 @@ jobs:
         - 3306:3306
     steps:
     - uses: actions/checkout@v2
+    - name: Verify MySQL connection
+      run: |
+        while ! mysqladmin ping -h"localhost" -P"3306" --silent; do
+          sleep 1
+        done
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -77,4 +82,4 @@ jobs:
       run: poetry run pytest -vv --cov="fastapi_aws_test" .
       env:
         FASTAPI_AWS_TEST_HOST: "0.0.0.0"
-        FASTAPI_AWS_TEST_DB_HOST: 127.0.0.1
+        FASTAPI_AWS_TEST_DB_HOST: localhost

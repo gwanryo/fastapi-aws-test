@@ -76,7 +76,8 @@ jobs:
         MYSQL_PASSWORD: fastapi_aws_test
       run: |
         mysql -h 127.0.0.1 -P 3306 --protocol=tcp -u root <<MYSQL_SCRIPT
-        GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;
+        CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+        GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION;
         FLUSH PRIVILEGES;
         MYSQL_SCRIPT
     - name: Set up Python

@@ -67,9 +67,16 @@ jobs:
     - uses: actions/checkout@v2
     - name: Verify MySQL connection
       run: |
-        while ! mysqladmin ping -h"localhost" -P"3306" --silent; do
+        while ! mysqladmin ping -h"127.0.0.1" -P"3306"; do
           sleep 1
         done
+    - name: Setup MySQL
+      run: |
+        mysql -h 127.0.0.1 -P 3306 --protocol=tcp -u root <<MYSQL_SCRIPT
+        SET @@global.sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION";
+        GRANT ALL PRIVILEGES ON *.* TO '{{ fastapi_aws_test-db.env.MYSQL_USER }}'@'%' IDENTIFIED BY '{{ fastapi_aws_test-db.env.MYSQL_PASSWORD }}' WITH GRANT OPTION;
+        FLUSH PRIVILEGES;
+        MYSQL_SCRIPT
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -82,4 +89,4 @@ jobs:
       run: poetry run pytest -vv --cov="fastapi_aws_test" .
       env:
         FASTAPI_AWS_TEST_HOST: "0.0.0.0"
-        FASTAPI_AWS_TEST_DB_HOST: localhost
+        FASTAPI_AWS_TEST_DB_HOST: 127.0.0.1

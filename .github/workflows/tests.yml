@@ -71,9 +71,14 @@ jobs:
           sleep 1
         done
     - name: Setup MySQL
+      env:
+        MYSQL_USER: fastapi_aws_test
+        MYSQL_PASSWORD: fastapi_aws_test
       run: |
         mysql -h 127.0.0.1 -P 3306 --protocol=tcp -u root <<MYSQL_SCRIPT
         SET @@global.sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION";
+        GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;
+        FLUSH PRIVILEGES;
         MYSQL_SCRIPT
     - name: Set up Python
       uses: actions/setup-python@v2

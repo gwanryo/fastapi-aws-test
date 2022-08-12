@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       fastapi_aws_test-db:
-        image: mysql:8.0
+        image: bitnami/mysql:8.0
         env:
           MYSQL_PASSWORD: fastapi_aws_test
           MYSQL_USER: fastapi_aws_test

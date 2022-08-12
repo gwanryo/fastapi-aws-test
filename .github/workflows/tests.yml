@@ -48,6 +48,7 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
     services:
+
       fastapi_aws_test-db:
         image: bitnami/mysql:8.0.28
         env:
@@ -55,9 +56,13 @@ jobs:
           MYSQL_USER: fastapi_aws_test
           MYSQL_DATABASE: fastapi_aws_test
           ALLOW_EMPTY_PASSWORD: yes
-        options: --health-cmd="mysqladmin ping -u root" --health-interval=15s --health-timeout=5s --health-retries=5
+        options: >-
+          --health-cmd="mysqladmin ping -u root"
+          --health-interval=15s
+          --health-timeout=5s
+          --health-retries=5
         ports:
-        - 3306
+        - 3306:3306
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -72,5 +77,4 @@ jobs:
       run: poetry run pytest -vv --cov="fastapi_aws_test" .
       env:
         FASTAPI_AWS_TEST_HOST: "0.0.0.0"
-        FASTAPI_AWS_TEST_DB_HOST: localhost
-        FASTAPI_AWS_TEST_DB_PORT: ${{job.services.fastapi_aws_test-db.ports['3306']}}
+        FASTAPI_AWS_TEST_DB_HOST: 127.0.0.1

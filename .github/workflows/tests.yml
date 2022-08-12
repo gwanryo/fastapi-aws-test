@@ -52,6 +52,7 @@ jobs:
       fastapi_aws_test-db:
         image: bitnami/mysql:8.0.28
         env:
+          MYSQL_ROOT_HOST: '%'
           MYSQL_PASSWORD: fastapi_aws_test
           MYSQL_USER: fastapi_aws_test
           MYSQL_DATABASE: fastapi_aws_test

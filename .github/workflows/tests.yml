@@ -74,7 +74,7 @@ jobs:
       run: |
         mysql -h 127.0.0.1 -P 3306 --protocol=tcp -u root <<MYSQL_SCRIPT
         SET @@global.sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION";
-        GRANT ALL PRIVILEGES ON *.* TO '${{ fastapi_aws_test-db.env.MYSQL_USER }}'@'%' IDENTIFIED BY '${{ fastapi_aws_test-db.env.MYSQL_PASSWORD }}' WITH GRANT OPTION;
+        GRANT ALL PRIVILEGES ON *.* TO '${{ job.services.fastapi_aws_test-db.env.MYSQL_USER }}'@'%' IDENTIFIED BY '${{ job.services.fastapi_aws_test-db.env.MYSQL_PASSWORD }}' WITH GRANT OPTION;
         FLUSH PRIVILEGES;
         MYSQL_SCRIPT
     - name: Set up Python

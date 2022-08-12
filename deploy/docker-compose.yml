@@ -1,0 +1,72 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    image: fastapi_aws_test:${FASTAPI_AWS_TEST_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      FASTAPI_AWS_TEST_HOST: 0.0.0.0
+      FASTAPI_AWS_TEST_DB_HOST: fastapi_aws_test-db
+      FASTAPI_AWS_TEST_DB_PORT: 3306
+      FASTAPI_AWS_TEST_DB_USER: fastapi_aws_test
+      FASTAPI_AWS_TEST_DB_PASS: fastapi_aws_test
+      FASTAPI_AWS_TEST_DB_BASE: fastapi_aws_test
+
+  db:
+    image: bitnami/mysql:8.0.28
+    hostname: fastapi_aws_test-db
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: "fastapi_aws_test"
+      MYSQL_ROOT_PASSWORD: "fastapi_aws_test"
+      MYSQL_DATABASE: "fastapi_aws_test"
+      MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password"
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 10s
+      timeout: 5s
+      retries: 40
+    volumes:
+    - fastapi_aws_test-db-data:/bitnami/mysql/data
+
+  migrator:
+    image: fastapi_aws_test:${FASTAPI_AWS_TEST_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      FASTAPI_AWS_TEST_DB_HOST: fastapi_aws_test-db
+      FASTAPI_AWS_TEST_DB_PORT: 3306
+      FASTAPI_AWS_TEST_DB_USER: fastapi_aws_test
+      FASTAPI_AWS_TEST_DB_PASS: fastapi_aws_test
+      FASTAPI_AWS_TEST_DB_BASE: fastapi_aws_test
+    depends_on:
+      db:
+        condition: service_healthy
+
+  redis:
+    image: bitnami/redis:6.2.5
+    hostname: "fastapi_aws_test-redis"
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 50
+
+
+
+volumes:
+  fastapi_aws_test-db-data:
+    name: fastapi_aws_test-db-data

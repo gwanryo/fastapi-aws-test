@@ -1,4 +1,4 @@
-name: Testing fastapi_aws_test
+name: Test
 
 on: push
 

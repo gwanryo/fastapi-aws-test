@@ -1,4 +1,4 @@
-name: "workflow"
+name: Deploying fastapi_aws_test
 
 on:
   push:

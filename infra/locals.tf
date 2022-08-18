@@ -29,9 +29,14 @@ locals {
   use_default_vpc = local.vpc.id == ""
 
   container_defaults = {
-    name  = "application"
+    name  = "fastapi-aws-test"
     image = "gwanryo/fastapi-aws-test"
-    ports = [80]
+    ports = [
+      {
+        containerPort = 80
+        hostPort = 80
+      }
+    ]
   }
   container = merge(local.container_defaults, var.container)
 }

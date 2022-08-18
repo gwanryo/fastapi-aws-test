@@ -4,7 +4,7 @@ resource "aws_iam_user" "publisher" {
 }
 
 resource "aws_iam_role" "ecs" {
-  name = "ecs-role"
+  name = "ecs-execution-role"
   path = "/serviceaccounts/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -65,7 +65,7 @@ resource "aws_iam_access_key" "publisher" {
 }
 
 resource "aws_iam_role_policy" "ecs" {
-  name = "fargate-execution-role"
+  name = "ecs-execution-role"
   role = aws_iam_role.ecs.id
 
   policy = <<EOF

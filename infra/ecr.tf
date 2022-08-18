@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "repository" {
-  name                 = local.ecr["repository_name"]
+  name                 = local.ecr.repository_name
   image_tag_mutability = "MUTABLE"
 }
 
@@ -10,7 +10,7 @@ resource "aws_ecr_repository_policy" "policy" {
     "Version": "2008-10-17",
     "Statement": [
       {
-        "Sid": "adds full ecr access to the ${local.ecr["repository_name"]} repository",
+        "Sid": "adds full ecr access to the ${local.ecr.repository_name} repository",
         "Effect": "Allow",
         "Principal": "*",
         "Action": [

@@ -4,26 +4,26 @@ data "aws_vpc" "vpc" {
 }
 
 # Create a Public Subnet 1
-resource "aws_subnet" "public-ecs-1" {
+resource "aws_subnet" "public_ecs_1" {
   vpc_id     = data.aws_vpc.vpc.id
   cidr_block = "172.31.0.0/24"
   availability_zone = "ap-northeast-2a"
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-ecs-1"
+    Name = "tf-public-ecs-1"
   }
 }
 
 # Create a Public Subnet 2
-resource "aws_subnet" "public-ecs-2" {
+resource "aws_subnet" "public_ecs_2" {
   vpc_id     = data.aws_vpc.vpc.id
   cidr_block = "172.31.1.0/24"
   availability_zone = "ap-northeast-2b"
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-ecs-2"
+    Name = "tf-public-ecs-2"
   }
 }
 

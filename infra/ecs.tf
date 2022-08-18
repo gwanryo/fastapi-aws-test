@@ -15,13 +15,7 @@ resource "aws_ecs_task_definition" "task" {
       name      = local.container.name
       image     = local.container.image
       essential = true
-      portMappings = [
-        for port in local.container.ports :
-        {
-          containerPort = port
-          hostPort      = port
-        }
-      ]
+      portMappings = local.container.ports
     }
   ])
 }
@@ -33,13 +27,16 @@ resource "aws_ecs_service" "service" {
   desired_count   = 1
 
   network_configuration {
-    subnets          = [for s in data.aws_subnet.subnets : s.id]
+    subnets       = [for s in data.aws_subnet.subnets : s.id]
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.group.arn
-    container_name   = local.container.name
-    container_port   = 80
+  dynamic "load_balancer" {
+    for_each = local.container.ports
+    content {
+      target_group_arn = aws_lb_target_group.group.arn
+      container_name   = local.container.name
+      container_port   = load_balancer.value.containerPort
+    }
   }
 
   ordered_placement_strategy {

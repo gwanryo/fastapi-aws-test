@@ -18,7 +18,7 @@ resource "aws_autoscaling_group" "asg" {
 
 resource "aws_launch_configuration" "ecs_conf" {
   name_prefix     = "tf-ecs-"
-  image_id        = "ami-01711d925a1e4cc3a"
+  image_id        = local.ami_id
   security_groups = [ aws_security_group.ec2_sg.id ]
   instance_type   = "t2.micro"
   user_data = <<EOF

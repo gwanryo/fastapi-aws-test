@@ -29,7 +29,7 @@ locals {
   use_default_vpc = local.vpc.id == ""
 
   container_defaults = {
-    name  = "fastapi-aws-test"
+    name  = "application"
     image = "gwanryo/fastapi-aws-test"
     ports = [
       {

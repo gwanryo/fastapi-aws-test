@@ -1,14 +1,14 @@
 resource "aws_lb" "alb" {
-  name               = local.lb["name"]
-  internal           = local.lb["internal"]
+  name               = local.lb.name
+  internal           = local.lb.internal
   load_balancer_type = "application"
   subnets            = [for s in data.aws_subnet.subnets : s.id]
 }
 
 resource "aws_lb_target_group" "group" {
-  name        = local.lb.target_group["name"]
-  port        = local.lb.target_group["port"]
-  protocol    = local.lb.target_group["protocol"]
+  name        = local.lb.target_group.name
+  port        = local.lb.target_group.port
+  protocol    = local.lb.target_group.protocol
   vpc_id      = data.aws_vpc.vpc.id
   target_type = "ip"
 

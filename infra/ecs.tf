@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "cluster" {
-  name               = local.ecs["cluster_name"]
+  name               = local.ecs.cluster_name
 }
 
 resource "aws_ecs_task_definition" "task" {

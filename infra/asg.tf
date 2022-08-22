@@ -1,6 +1,6 @@
 # AWS Auto-scaling group
 resource "aws_autoscaling_group" "asg" {
-  name                      = "tf-asg"
+  name                      = "terraform-autoscaling-group-${local.container.name}"
   max_size                  = 10
   min_size                  = 1
   health_check_grace_period = 300
@@ -9,7 +9,11 @@ resource "aws_autoscaling_group" "asg" {
   force_delete              = true
   launch_configuration      = aws_launch_configuration.ecs_conf.name
   termination_policies      = ["OldestLaunchConfiguration", "Default"]
-  vpc_zone_identifier       = [for s in data.aws_subnet.subnets : s.id]
+  vpc_zone_identifier       = data.aws_subnets.subnets.ids
+
+  depends_on = [
+    data.aws_subnets.subnets
+  ]
 
   timeouts {
     delete = "15m"
@@ -17,9 +21,9 @@ resource "aws_autoscaling_group" "asg" {
 }
 
 resource "aws_launch_configuration" "ecs_conf" {
-  name_prefix     = "tf-ecs-"
+  name_prefix     = "terraform-ecs-"
   image_id        = local.ami_id
-  security_groups = [ aws_security_group.ec2_sg.id ]
+  security_groups = [ aws_security_group.sg.id ]
   instance_type   = "t2.micro"
   user_data = <<EOF
 #!/bin/bash

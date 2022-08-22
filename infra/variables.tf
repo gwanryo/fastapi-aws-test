@@ -4,6 +4,12 @@ variable "aws_region" {
   description = "AWS region"
 }
 
+variable "project_name" {
+  type        = string
+  default     = "fastapi-aws-test"
+  description = "Name of project"
+}
+
 variable "ecr_values" {
   type        = any
   default     = {}

@@ -1,3 +1,11 @@
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = "log-group-${local.ecs.cluster_name}"
+  retention_in_days = 30
+  tags              = {
+    Name = "log-group-${local.ecs.cluster_name}"
+  }
+}
+
 resource "aws_ecs_cluster" "cluster" {
   name = local.ecs.cluster_name
   capacity_providers = ["FARGATE"]
@@ -23,6 +31,14 @@ resource "aws_ecs_task_definition" "task" {
       image        = local.container.image
       essential    = true
       portMappings = local.container.ports
+      logConfiguration = {
+        logDriver = "awslogs"
+        options   = {
+          awslogs-group         = aws_cloudwatch_log_group.log_group.name,
+          awslogs-region        = local.region
+          awslogs-stream-prefix = "${local.container.name}"
+        }
+      }
     }
   ])
 }
@@ -39,6 +55,7 @@ resource "aws_ecs_service" "service" {
     capacity_provider = "FARGATE"
     weight            = 100
   }
+
   network_configuration {
     subnets = data.aws_subnets.subnets.ids
   }

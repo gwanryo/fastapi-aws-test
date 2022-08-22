@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "task" {
     "EC2",
   ]
   network_mode              = "awsvpc"
-  cpu                       = 1024 # 1 vCPU
-  memory                    = 1024 # 1 GiB
+  cpu                       = 512 # 0.5 vCPU
+  memory                    = 512 # 0.5 GiB
   container_definitions     = jsonencode([
     {
       name         = local.container.name
@@ -29,7 +29,7 @@ resource "aws_ecs_service" "service" {
   name                  = local.ecs.service_name
   cluster               = aws_ecs_cluster.cluster.id
   task_definition       = aws_ecs_task_definition.task.arn
-  desired_count         = 2
+  desired_count         = 1
   force_new_deployment  = true
 
   network_configuration {

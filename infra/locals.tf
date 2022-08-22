@@ -37,7 +37,7 @@ locals {
     image = "gwanryo/${var.project_name}"
     ports = [
       {
-        containerPort = 80
+        containerPort = 8000
         hostPort      = 80
       }
     ]

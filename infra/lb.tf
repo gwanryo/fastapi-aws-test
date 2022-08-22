@@ -2,6 +2,7 @@ resource "aws_lb" "alb" {
   name               = local.lb.name
   internal           = local.lb.internal
   load_balancer_type = "application"
+  security_groups    = [aws_security_group.sg.id]
   subnets            = data.aws_subnets.subnets.ids
 
   depends_on = [

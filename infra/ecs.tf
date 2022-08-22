@@ -25,11 +25,6 @@ resource "aws_ecs_task_definition" "task" {
       portMappings = local.container.ports
     }
   ])
-
-  volume {
-    name      = "task-storage"
-    host_path = "/ecs/task-storage"
-  }
 }
 
 resource "aws_ecs_service" "service" {
@@ -55,11 +50,6 @@ resource "aws_ecs_service" "service" {
       container_name   = local.container.name
       container_port   = load_balancer.value.containerPort
     }
-  }
-
-  ordered_placement_strategy {
-    type  = "binpack"
-    field = "cpu"
   }
 
   deployment_controller {

@@ -1,8 +1,18 @@
+# Infrastructure
+
+## Before destroy
+
+```zsh
+aws ecs delete-cluster --cluster terraform-ecs-cluster
+aws ecs put-cluster-capacity-providers --cluster terraform-ecs-cluster --capacity-providers "[]"
+aws ecs delete-capacity-provider --capacity-provider terraform-ecs-capacity-provider
+```
+
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.25.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.27.0 |
 
 ## Modules
 

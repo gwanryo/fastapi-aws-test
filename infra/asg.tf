@@ -1,7 +1,7 @@
 # AWS Auto-scaling group
 resource "aws_autoscaling_group" "asg" {
   name                      = "terraform-autoscaling-group-${local.container.name}"
-  max_size                  = 10
+  max_size                  = 4
   min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "EC2"
@@ -28,7 +28,7 @@ resource "aws_launch_configuration" "ecs_conf" {
   user_data = <<EOF
 #!/bin/bash
 # The cluster this agent should check into.
-echo 'ECS_CLUSTER=${aws_ecs_cluster.cluster.name}' >> /etc/ecs/ecs.config
+echo 'ECS_CLUSTER=${local.ecs.cluster_name}' >> /etc/ecs/ecs.config
 # Disable privileged containers.
 echo 'ECS_DISABLE_PRIVILEGED=true' >> /etc/ecs/ecs.config
 EOF

@@ -5,7 +5,7 @@ locals {
   region        = var.aws_region
   ami_id        = data.aws_ssm_parameter.ecs_ami.value
   ecr_defaults  = {
-    repository_name   = "terraform-ecr"
+    repository_name   = "terraform-ecr-repository"
   }
   ecr           = merge(local.ecr_defaults, var.ecr_values)
 

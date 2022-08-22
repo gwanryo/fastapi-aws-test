@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "task" {
     "EC2",
   ]
   network_mode              = "awsvpc"
-  cpu                       = 256
-  memory                    = 512
+  cpu                       = 1024 # 1 vCPU
+  memory                    = 1024 # 1 GiB
   container_definitions     = jsonencode([
     {
       name         = local.container.name
@@ -22,11 +22,6 @@ resource "aws_ecs_task_definition" "task" {
   volume {
     name      = "task-storage"
     host_path = "/ecs/task-storage"
-  }
-
-  placement_constraints {
-    type       = "memberOf"
-    expression = "attribute:ecs.availability-zone in [${aws_subnet.public_subnet_1.availability_zone}, ${aws_subnet.public_subnet_2.availability_zone}]"
   }
 }
 

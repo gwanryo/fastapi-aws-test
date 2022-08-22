@@ -26,7 +26,7 @@ resource "aws_subnet" "public_subnet_1" {
 resource "aws_subnet" "public_subnet_2" {
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "ap-northeast-2b"
+  availability_zone       = "ap-northeast-2c"
   map_public_ip_on_launch = true
 
   depends_on = [
@@ -38,29 +38,39 @@ resource "aws_subnet" "public_subnet_2" {
   }
 }
 
-data "aws_route_table" "route" {
+resource "aws_route_table" "route" {
   vpc_id = aws_vpc.vpc.id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
   depends_on = [
-    aws_vpc.vpc
+    aws_vpc.vpc,
+    aws_internet_gateway.igw
   ]
+
+  tags = {
+    Name = "terraform-route-table-${local.container.name}"
+  }
 }
 
 resource "aws_route_table_association" "route_assoc_1" {
   subnet_id      = aws_subnet.public_subnet_1.id
-  route_table_id = data.aws_route_table.route.id
+  route_table_id = aws_route_table.route.id
 
   depends_on = [
-    data.aws_route_table.route
+    aws_route_table.route
   ]
 }
 
 resource "aws_route_table_association" "route_assoc_2" {
   subnet_id      = aws_subnet.public_subnet_2.id
-  route_table_id = data.aws_route_table.route.id
+  route_table_id = aws_route_table.route.id
 
   depends_on = [
-    data.aws_route_table.route
+    aws_route_table.route
   ]
 }
 

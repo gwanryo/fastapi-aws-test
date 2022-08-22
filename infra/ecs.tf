@@ -58,6 +58,7 @@ resource "aws_ecs_service" "service" {
 
   network_configuration {
     subnets = data.aws_subnets.subnets.ids
+    assign_public_ip = true
   }
 
   dynamic "load_balancer" {

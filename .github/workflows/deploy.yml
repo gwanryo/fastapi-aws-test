@@ -43,6 +43,8 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
     - name: Download task definition
+      env:
+        ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
       run: |
         aws ecs describe-task-definition --task-definition $ECS_SERVICE --query taskDefinition > task-definition.json
 

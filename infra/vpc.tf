@@ -117,6 +117,8 @@ data "aws_subnets" "subnets" {
   }
 
   depends_on = [
-    aws_vpc.vpc
+    aws_vpc.vpc,
+    aws_subnet.public_subnet_1,
+    aws_subnet.public_subnet_2
   ]
 }

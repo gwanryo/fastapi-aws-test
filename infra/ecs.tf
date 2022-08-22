@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 resource "aws_ecs_task_definition" "task" {
-  family                    = "service"
+  family                    = local.ecs.service_name
   requires_compatibilities  = [
     "EC2",
   ]
@@ -58,4 +58,8 @@ resource "aws_ecs_service" "service" {
   deployment_controller {
     type = "ECS"
   }
+
+  depends_on = [
+    aws_ecs_cluster.cluster
+  ]
 }

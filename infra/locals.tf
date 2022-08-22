@@ -16,7 +16,7 @@ locals {
   ecs = merge(local.ecs_defaults, var.ecs_values)
 
   lb_defaults = {
-    Name      = "terraform-alb"
+    name      = "terraform-alb"
     internal  = false
     target_group = {
       name      = "terraform-alb-tg"

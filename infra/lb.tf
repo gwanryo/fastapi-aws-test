@@ -17,6 +17,12 @@ resource "aws_lb_target_group" "group" {
   vpc_id      = aws_vpc.vpc.id
   target_type = "ip"
 
+  health_check {
+    healthy_threshold   = 5
+    unhealthy_threshold = 5
+    path                = "/api/health"
+  }
+
   depends_on = [
     aws_lb.alb
   ]

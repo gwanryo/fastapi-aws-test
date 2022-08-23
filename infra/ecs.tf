@@ -8,18 +8,36 @@ resource "aws_cloudwatch_log_group" "log_group" {
 
 resource "aws_ecs_cluster" "cluster" {
   name = local.ecs.cluster_name
-  capacity_providers = ["FARGATE"]
+}
+
+resource "aws_ecs_cluster_capacity_providers" "capa_providers" {
+  cluster_name = aws_ecs_cluster.cluster.name
+  capacity_providers = [aws_ecs_capacity_provider.capa_provider_1.name]
 
   default_capacity_provider_strategy {
-    capacity_provider = "FARGATE"
+    base              = 1
     weight            = 100
+    capacity_provider = aws_ecs_capacity_provider.capa_provider_1.name
   }
+}
+
+resource "aws_ecs_capacity_provider" "capa_provider_1" {
+  # Currentry, we cannot delete capacity provider. If you exec 'terraform destroy', you can delete resouce only on tfstate.
+  name = "terraform-ecs-capacity-provider"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn = aws_autoscaling_group.asg.arn
+  }
+
+  depends_on = [
+    aws_autoscaling_group.asg
+  ]
 }
 
 resource "aws_ecs_task_definition" "task" {
   family                    = local.ecs.service_name
   requires_compatibilities  = [
-    "FARGATE",
+    "EC2",
   ]
   execution_role_arn        = aws_iam_role.ecs.arn
   network_mode              = "awsvpc"
@@ -51,15 +69,14 @@ resource "aws_ecs_service" "service" {
   force_new_deployment  = true
 
   capacity_provider_strategy {
-    base              = 1
-    capacity_provider = "FARGATE"
-    weight            = 100
+    capacity_provider = aws_ecs_capacity_provider.capa_provider_1.name
+    weight = 100
+    base = 1
   }
 
   network_configuration {
     security_groups = [aws_security_group.sg.id]
     subnets = data.aws_subnets.subnets.ids
-    assign_public_ip = true
   }
 
   dynamic "load_balancer" {
